@@ -1,17 +1,28 @@
 "use client";
 
-import { signIn, signOut } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { signIn, signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 import React from "react";
 
 export const Navbar = () => {
+  const { data: session } = useSession();
   return (
-    <nav className="flex justify-between items-center max-w-7xl mx-auto gap-2 w-full">
-      <span>Gmail Cleanser</span>
+    <nav className="flex justify-between items-center gap-2 w-full py-2">
+      <Link href="/" className="font-mono font-medium  tracking-wider">
+        Gmail Cleanser
+      </Link>
       <div className="flex items-center gap-4 ">
-        <button onClick={() => signIn("google", { redirectTo: "/dashboard" })}>
-          Sign In
-        </button>
-        <button onClick={() => signOut()}>Sign Out</button>
+        {!session ? (
+          <Button
+          variant={"link"}
+            onClick={() => signIn("google", { redirectTo: "/dashboard" })}
+          >
+            Sign In
+          </Button>
+        ) : (
+          <Button onClick={() => signOut()}>Sign Out</Button>
+        )}
       </div>
     </nav>
   );

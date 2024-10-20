@@ -1,8 +1,21 @@
-import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { gmail } from "@googleapis/gmail";
+import { NextResponse } from "next/server";
 
-export async function GET() {
+type QueryParams = {
+  id: string;
+};
+
+export async function GET(
+  req: Request,
+  {
+    params,
+  }: {
+    params: QueryParams;
+  }
+) {
+  const { id } = params;
+
   const session = await auth();
 
   if (!session) {
@@ -11,17 +24,14 @@ export async function GET() {
       { status: 401 }
     );
   }
+
   const access_token = session.user.token.access_token;
 
   const emailList = await gmail("v1").users.messages.list({
     userId: "me",
     oauth_token: access_token,
-    pageToken: "0",
+    pageToken: id === "null" ? "0" : id,
   });
-
-  console.log("====================================");
-  console.log(emailList);
-  console.log("====================================");
 
   if (!emailList.data.messages) {
     return new NextResponse(

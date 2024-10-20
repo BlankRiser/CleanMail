@@ -19,7 +19,7 @@ const scopes = [
     "https://www.googleapis.com/auth/gmail.addons.current.message.readonly",
     "https://www.googleapis.com/auth/gmail.addons.current.action.compose",
 
-    "https://mail.google.com/"
+    "https://mail.google.com/",
   ]
 
 const providers: Provider[] = [
@@ -50,13 +50,11 @@ export const providerMap = providers
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: providers,
   pages: {
-    signIn: "/signin",
-    error: "/login",
+    signIn: "/",
+    error: "/",
   },
   callbacks: {
-    jwt: async ({ token, account }) => {
-    
-      
+    jwt: async ({ token, account }) => {  
       return {
         ...token,
         ...account,
@@ -72,6 +70,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
       };
     },
+    authorized: async ({ auth }) => {
+      if (auth) {
+        return true;
+      }
+      return false;
+    }
   },
   secret: process.env.AUTH_SECRET,
 });
