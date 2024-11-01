@@ -6,6 +6,8 @@ CleanMail is an automation tool designed to help you keep your inbox clutter-fre
 
 ### Features (WIP)
 
+- [x] Support gmail(only) accounts
+- [x] Read emails
 - [ ] Automated Email Deletion: Set conditions to delete emails automatically, reducing inbox clutter.
 - [ ] Customizable Rules: Create rules based on email age, sender, subject, labels, or keywords.
 - [ ] Scheduled Cleanups: Define how often the cleanup process runs (daily, weekly, monthly).
@@ -18,7 +20,10 @@ CleanMail is an automation tool designed to help you keep your inbox clutter-fre
 
 Setup a google project and enable the Gmail API. 
 
+1. Copy `env.example` to `.env.local` and fill in the required fields.
+2. Run the following commands to start the app:
 ```bash
 bun install
 bun run dev
 ```
+

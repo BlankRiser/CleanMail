@@ -15,7 +15,8 @@ export async function GET(
   }
 ) {
   const { id } = params;
-
+  const { searchParams } = new URL(req.url)
+  console.log("searchParams", searchParams)
   const session = await auth();
 
   if (!session) {
@@ -31,7 +32,11 @@ export async function GET(
     userId: "me",
     oauth_token: access_token,
     pageToken: id === "null" ? "0" : id,
+    
   });
+
+
+  console.log("emailList", emailList)
 
   if (!emailList.data.messages) {
     return new NextResponse(

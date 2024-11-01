@@ -21,13 +21,13 @@ export default function Home() {
             Sign in with Google
           </Button>
         ) : (
-          <Link href={"/dashboard"}>
-            <Button asChild size={"xl"} variant={"outline"} rounded={"full"}>
-              Go to Dashboard
-            </Button>
-          </Link>
+          <Button asChild size={"xl"} variant={"outline"} rounded={"full"}>
+            <Link href={"/dashboard"}>Go to Dashboard</Link>
+          </Button>
         )}
       </main>
+      
+        
     </div>
   );
 }
