@@ -3,60 +3,73 @@
 import { Button } from "@/components/ui/button";
 import { env } from "@/env.mjs";
 import { EmailDataTable } from "@/features/dashboard/email-data-table";
+import { useEmailStore } from "@/providers/email-store-provider";
 import { useQuery } from "@tanstack/react-query";
-
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
+import { useQueryState } from "nuqs";
 
 export default function Dashboard() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const [currentPageIdQuery, setCurrentPageIdQuery] = useQueryState("pageId");
+  const { addPageId, previousPageId, nextPageId, setCurrentPageId } =
+    useEmailStore((state) => state);
 
-  const pageId = searchParams.get("pageId");
-
-  const { data: emails, isPending , isFetching} = useQuery({
-    queryKey: ["emails", pageId],
+  const {
+    data: emails,
+    isPending,
+    isFetching,
+  } = useQuery({
+    queryKey: ["emails", currentPageIdQuery],
     queryFn: async () => {
-      const url = env.NEXT_PUBLIC_URL + `/api/gmail/${pageId ?? "0"}`;
+      const url = env.NEXT_PUBLIC_URL + `/api/gmail/${currentPageIdQuery ?? "0"}`;
       const response = await fetch(url);
       return await response.json();
     },
-    placeholderData: (prev) => prev
+    placeholderData: (prev) => prev,
   });
 
-  console.log("emails", emails);
-
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set(name, value);
-
-      return params.toString();
-    },
-    [searchParams]
-  );
-
-  if(isPending){
-    return <div>Loading...</div>
+  if (isPending) {
+    return <div>Loading...</div>;
   }
 
+  console.log(previousPageId, nextPageId);
+
   return (
-    <div>
-      <div className="max-w-4xl mx-auto">
-        <EmailDataTable emails={emails} />
+    <section className="space-y-4">
+    <EmailDataTable emails={emails} />
+     
+      <div className="flex justify-end items-center gap-2">
+        <Button
+          variant="outline"
+          disabled={!previousPageId}
+          onClick={() => {
+            console.log("previousPageId", previousPageId);
+            if (previousPageId) {
+              setCurrentPageIdQuery(previousPageId);
+              setCurrentPageId(previousPageId);
+            }
+          }}
+        >
+          {isFetching ? "Loading" : "Previous"}
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            if (!nextPageId) {
+
+              setCurrentPageIdQuery(emails?.meta?.nextPageToken);
+              addPageId(emails?.meta?.nextPageToken);
+
+              console.log(
+                emails?.meta?.nextPageToken
+              )
+            } else {
+              setCurrentPageIdQuery(nextPageId);
+              setCurrentPageId(emails?.meta?.nextPageToken);
+            }
+          }}
+        >
+          {isFetching ? "Loading" : "Next"}
+        </Button>
       </div>
-      <Button
-        onClick={() => {
-          router.push(
-            pathname +
-              "?" +
-              createQueryString("pageId", emails?.meta?.nextPageToken)
-          );
-        }}
-      >
-        {isFetching ? "Loading" : "get next emails"}
-      </Button>
-    </div>
+    </section>
   );
 }

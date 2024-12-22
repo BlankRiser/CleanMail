@@ -1,6 +1,8 @@
-import { GlobalProvider } from "@/store/global-provider";
+import { EmailStoreProvider } from "@/providers/email-store-provider";
+import { GlobalProvider } from "@/providers/global-provider";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "./styles/globals.css";
 
 const geistSans = localFont({
@@ -29,7 +31,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.className} ${geistMono.variable} antialiased w-full`}
       >
-        <GlobalProvider>{children}</GlobalProvider>
+        <NuqsAdapter>
+          <GlobalProvider>
+            <EmailStoreProvider>{children}</EmailStoreProvider>
+          </GlobalProvider>
+        </NuqsAdapter>
       </body>
     </html>
   );

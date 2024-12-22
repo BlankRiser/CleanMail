@@ -21,8 +21,8 @@ export function DataTable<TData, TValue>({
   columns,
 }: DataTableProps<TData, TValue>) {
   return (
-    <div className="rounded-md border border-neutral-600 overflow-hidden">
-      <div className="h-[85vh] relative overflow-auto">
+    <div className="w-full rounded-md border border-neutral-600 overflow-hidden">
+      <div className="h-[85vh] relative overflow-auto ">
         <Table>
           <TableHeader className="sticky top-0 bg-neutral-100 dark:bg-neutral-900 z-10 border-b border-b-neutral-800 dark:border-b-neutral-600">
             {table.getHeaderGroups().map((headerGroup) => (

@@ -1,3 +1,4 @@
+"use client"
 import { createStore } from "zustand";
 
 type FilterState = {
